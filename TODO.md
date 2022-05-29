@@ -17,3 +17,12 @@ Query parameter:
 * [+] Ottenere l'id del tweet piu recente
 * [] Invocare API per mettere like al tweet piu recente tramite id
 * [+] Invocare API per retweettare il tweet piu recente tramite id
+
+## Machine Learning TODO
+### Using TextBlob to reconyze some words in tweets to avoid spam retweets
+
+* [] Importare Textblob
+* [] Associare ad ogni testo(tweet) il proprio ID
+* [] Parsare il testo per ottenere le singole parole
+* [] Retweet solo se il testo non contiene determinate parole
+    * [] Retweet anche se il sentiment analysis è positivo (opzionale)

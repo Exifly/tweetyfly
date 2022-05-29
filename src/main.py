@@ -1,6 +1,7 @@
 import requests
 import os
 import time
+from textblob import TextBlob
 from dotenv import load_dotenv
 from requests_oauthlib import OAuth1
 
@@ -16,7 +17,7 @@ ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 ACCESS_SECRET = os.getenv("ACCESS_SECRET")
 
 
-def get_last_tweet_id():
+def get_last_tweet_id_and_text():
     # - Get desc sorted list of tweet id - #
     header = {
         'Authorization': 'Bearer {}'.format(BEARER)
@@ -57,9 +58,13 @@ def retweet(id):
         print(f"Tweet N {id} not retweeted")
 
 
+def analyze_text():
+    pass
+
+
 print("Bot Start")
 while True:
     tweet_id_list = []
-    tweet_id_list = get_last_tweet_id()
+    tweet_id_list = get_last_tweet_id_and_text()
     retweet(tweet_id_list[0])
     time.sleep(5)
