@@ -16,4 +16,4 @@ Query parameter:
 * [+] Filtrare Response Json dal tweet piu recente
 * [+] Ottenere l'id del tweet piu recente
 * [] Invocare API per mettere like al tweet piu recente tramite id
-* [] Invocare API per retweettare il tweet piu recente tramite id
+* [+] Invocare API per retweettare il tweet piu recente tramite id
