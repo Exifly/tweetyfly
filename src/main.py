@@ -72,12 +72,15 @@ def analyze_text(tweets):
     bad_words = ["pippo", "pluto", "topolino", "gesuel", "bastard"]
     checked_id = 0
 
-    for text in tweets:
-        blob = TextBlob(text=text)
+    for text in tweets['tweets']:
+        print(text)
+        blob = TextBlob(text=text['text'])
+        print(blob.words)
         if (blob.words in bad_words):
             continue
         else:
-            checked_id = text[0]
+            checked_id = text['id']
+            print(f"Checked ID -->> {checked_id}")
             return checked_id
 
 
@@ -88,5 +91,5 @@ while True:
     tweet_id_list, tweets_list = get_last_tweet_id_and_text()
     checked_id = analyze_text(tweets=tweets_list)
     print(checked_id)
-    retweet(tweet_id_list[0])
+    # retweet(tweet_id_list[0])
     time.sleep(5)
