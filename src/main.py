@@ -19,6 +19,10 @@ ACCESS_SECRET = os.getenv("ACCESS_SECRET")
 
 def get_last_tweet_id_and_text():
     # - Get desc sorted list of tweet id - #
+    id_list = []
+    tweets = {}
+    tweet = []
+
     header = {
         'Authorization': 'Bearer {}'.format(BEARER)
     }
@@ -32,7 +36,13 @@ def get_last_tweet_id_and_text():
     resp = requests.get(
         "https://api.twitter.com/2/tweets/search/recent", headers=header, params=query).json()
 
-    return [id['id'] for id in resp['data']]
+    id_list = [id['id'] for id in resp['data']]
+    for el in resp['data']:
+        tweet.append({"id": el['id'], "text": el['text']})
+        tweets = {"tweets": tweet}
+
+    # print(tweets)
+    return id_list, tweets
 
 
 def retweet(id):
@@ -58,13 +68,25 @@ def retweet(id):
         print(f"Tweet N {id} not retweeted")
 
 
-def analyze_text():
-    pass
+def analyze_text(tweets):
+    bad_words = ["pippo", "pluto", "topolino", "gesuel", "bastard"]
+    checked_id = 0
+
+    for text in tweets:
+        blob = TextBlob(text=text)
+        if (blob.words in bad_words):
+            continue
+        else:
+            checked_id = text[0]
+            return checked_id
 
 
 print("Bot Start")
 while True:
     tweet_id_list = []
-    tweet_id_list = get_last_tweet_id_and_text()
+    tweets_list = {}
+    tweet_id_list, tweets_list = get_last_tweet_id_and_text()
+    checked_id = analyze_text(tweets=tweets_list)
+    print(checked_id)
     retweet(tweet_id_list[0])
     time.sleep(5)
