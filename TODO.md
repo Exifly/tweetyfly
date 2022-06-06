@@ -29,5 +29,5 @@ Query parameter:
 
 
 ## TODO Feature 1 ##
-* [ ] Implementare checks sulle response delle api 
+* [x] Implementare checks sulle response delle api 
 * [ ] Descrivere codice nei commenti

@@ -37,9 +37,15 @@ def get_last_tweet_id_and_text():
     }
 
     resp = requests.get(
-        "https://api.twitter.com/2/tweets/search/recent", headers=header, params=query).json()
+        "https://api.twitter.com/2/tweets/search/recent", headers=header, params=query)
 
-    id_list = [id['id'] for id in resp['data']]
+    if resp.status_code == 200:
+        resp = resp.json()
+        id_list = [id['id'] for id in resp['data']]
+    else:
+        print(
+            f"[{date()}] Error requesting tweets api STATUS_CODE = {resp.status_code}")
+
     for el in resp['data']:
         tweet.append({"id": el['id'], "text": el['text']})
 
@@ -64,12 +70,17 @@ def retweet(id):
 
     user_id = os.getenv("MY_USER_ID")
     resp_2 = requests.post(
-        f"https://api.twitter.com/2/users/{user_id}/retweets", auth=auth, json=payload).json()
+        f"https://api.twitter.com/2/users/{user_id}/retweets", auth=auth, json=payload)
 
-    if (resp_2['data']['retweeted']):
-        print(f"[{date()}] Tweet N {id} succesfully retweeted.")
+    if resp_2.status_code == 200:
+        resp_2 = resp_2.json()
+        if (resp_2['data']['retweeted']):
+            print(f"[{date()}] Tweet N {id} succesfully retweeted.")
+        else:
+            print(f"[{date()}] Tweet N {id} not retweeted")
     else:
-        print(f"[{date()}] Tweet N {id} not retweeted")
+        print(
+            f"[{date()}] Error ivoking retweet api STATUS_CODE = {resp_2.status_code}")
 
 
 def analyze_text(tweets):
@@ -142,5 +153,6 @@ while True:
     checked_id = analyze_text(tweets=tweets_list)
     like(tweet_id_list[0])
     retweet(tweet_id_list[0])
+    print("#####################")
     print(" ")
     time.sleep(delay)
