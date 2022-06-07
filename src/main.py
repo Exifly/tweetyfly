@@ -32,7 +32,7 @@ auth = OAuth1(
 
 def get_last_tweet_id_and_text():
     # - Get desc sorted list of tweets text and id - #
-    header = { 'Authorization': 'Bearer {}'.format(BEARER) }
+    header = {'Authorization': 'Bearer {}'.format(BEARER)}
 
     query = {
         "query": "#programming",
@@ -40,12 +40,14 @@ def get_last_tweet_id_and_text():
         "sort_order": "recency"
     }
 
-    resp = requests.get("https://api.twitter.com/2/tweets/search/recent", headers=header, params=query)
+    resp = requests.get(
+        "https://api.twitter.com/2/tweets/search/recent", headers=header, params=query)
 
     if resp.status_code == 200:
         resp = resp.json()
     else:
-        print(f"[{date()}] Error requesting tweets api STATUS_CODE = {resp.status_code}")
+        print(
+            f"[{date()}] Error requesting tweets api STATUS_CODE = {resp.status_code}")
 
     tweets = [{"id": el['id'], "text": el['text']} for el in resp['data']]
 
@@ -57,7 +59,8 @@ def retweet(id):
     payload = {"tweet_id": id}
 
     user_id = os.getenv("MY_USER_ID")
-    resp_2 = requests.post(f"https://api.twitter.com/2/users/{user_id}/retweets", auth=auth, json=payload)
+    resp_2 = requests.post(
+        f"https://api.twitter.com/2/users/{user_id}/retweets", auth=auth, json=payload)
 
     if resp_2.status_code == 200:
         resp_2 = resp_2.json()
@@ -91,19 +94,22 @@ def analyze_text(tweets):
             if x not in bad_words:
                 count_list += 1
                 if count_list == blob_len:
-                    print([{date()}], colored(f"Oh, that's a good one!", 'green'))
+                    print([{date()}], colored(
+                        f"Oh, that's a good one!", 'green'))
                     return checked_id
             else:
-                print([{date()}], colored(f"Tweet with id {text['id']} is not good..\n\n", 'red'))
+                print([{date()}], colored(
+                    f"Tweet with id {text['id']} is not good..\n", 'red'))
                 counter += 1
                 break
 
 
 def like(id):
-    body = { "tweet_id": id }
+    body = {"tweet_id": id}
     user_id = os.getenv("MY_USER_ID")
 
-    resp = requests.post(f"https://api.twitter.com/2/users/{user_id}/likes", auth=auth, json=body)
+    resp = requests.post(
+        f"https://api.twitter.com/2/users/{user_id}/likes", auth=auth, json=body)
 
     if (resp.status_code == 200):
         resp_parsed = resp.json()
@@ -128,5 +134,5 @@ if __name__ == "__main__":
         checked_id = analyze_text(tweets=tweets_list)
         # like(checked_id)
         # retweet(checked_id)
-        print("\n\n")
+        print("\n")
         time.sleep(5)
