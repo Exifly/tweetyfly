@@ -1,14 +1,16 @@
-from re import I
-import requests
-import os
-import time
-import random
-import datetime
-from textblob import TextBlob
-from dotenv import load_dotenv
 from requests_oauthlib import OAuth1
+from dotenv import load_dotenv
+from textblob import TextBlob
+from termcolor import colored
+import requests
+import datetime
+import random
+import time
+import os
+
 
 load_dotenv()
+
 
 # - GET GLOBAL KEYS TO MAKE REQUESTS - #
 API_SECRET = os.getenv("API_SECRET")
@@ -20,15 +22,17 @@ ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 ACCESS_SECRET = os.getenv("ACCESS_SECRET")
 
 
+auth = OAuth1(
+    client_key=API_KEY,
+    client_secret=API_SECRET,
+    resource_owner_key=ACCESS_TOKEN,
+    resource_owner_secret=ACCESS_SECRET
+)
+
+
 def get_last_tweet_id_and_text():
     # - Get desc sorted list of tweets text and id - #
-    id_list = []
-    tweets = {}
-    tweet = []
-
-    header = {
-        'Authorization': 'Bearer {}'.format(BEARER)
-    }
+    header = { 'Authorization': 'Bearer {}'.format(BEARER) }
 
     query = {
         "query": "#programming",
@@ -36,41 +40,24 @@ def get_last_tweet_id_and_text():
         "sort_order": "recency"
     }
 
-    resp = requests.get(
-        "https://api.twitter.com/2/tweets/search/recent", headers=header, params=query)
+    resp = requests.get("https://api.twitter.com/2/tweets/search/recent", headers=header, params=query)
 
     if resp.status_code == 200:
         resp = resp.json()
-        id_list = [id['id'] for id in resp['data']]
     else:
-        print(
-            f"[{date()}] Error requesting tweets api STATUS_CODE = {resp.status_code}")
+        print(f"[{date()}] Error requesting tweets api STATUS_CODE = {resp.status_code}")
 
-    for el in resp['data']:
-        tweet.append({"id": el['id'], "text": el['text']})
+    tweets = [{"id": el['id'], "text": el['text']} for el in resp['data']]
 
-    tweets = {"tweets": tweet}
-
-    # print(tweets)
-    return id_list, tweets
+    return tweets
 
 
 def retweet(id):
     # - Retweet by id and user id - #
-    payload = {
-        "tweet_id": id
-    }
-
-    auth = OAuth1(
-        client_key=API_KEY,
-        client_secret=API_SECRET,
-        resource_owner_key=ACCESS_TOKEN,
-        resource_owner_secret=ACCESS_SECRET
-    )
+    payload = {"tweet_id": id}
 
     user_id = os.getenv("MY_USER_ID")
-    resp_2 = requests.post(
-        f"https://api.twitter.com/2/users/{user_id}/retweets", auth=auth, json=payload)
+    resp_2 = requests.post(f"https://api.twitter.com/2/users/{user_id}/retweets", auth=auth, json=payload)
 
     if resp_2.status_code == 200:
         resp_2 = resp_2.json()
@@ -94,43 +81,30 @@ def analyze_text(tweets):
     checked_id = 0
     counter = 0
 
-    for text in tweets['tweets']:
-        print(f"[{date()}] Checked Tweet N {counter}")
+    for text in tweets:
+        # print(f"[{date()}] Checked Tweet N {counter}")
         blob = TextBlob(text=text['text'])
-        print(f"[{text['id']}] {blob.words.lower()}")
-        blob_words = blob.words.lower()
-
+        print(f"[{text['id']}] {text['text']}")
         count_list = 0
-        blob_len = len(blob_words)
-        for x in blob_words:
+        blob_len = len(blob.words)
+        for x in blob.words.lower():
             if x not in bad_words:
                 count_list += 1
                 if count_list == blob_len:
-                    print(f"[{date()}] Oh, that's a good one!")
-                    checked_id = text['id']
-                    print(f"[{date()}] Checked ID -->> {checked_id}")
+                    print([{date()}], colored(f"Oh, that's a good one!", 'green'))
                     return checked_id
             else:
-                print(f"[{date()}] Tweet with id {text['id']} is not good..")
+                print([{date()}], colored(f"Tweet with id {text['id']} is not good..\n\n", 'red'))
                 counter += 1
                 break
 
 
 def like(id):
-    body = {
-        "tweet_id": id
-    }
-
-    auth = OAuth1(
-        client_key=API_KEY,
-        client_secret=API_SECRET,
-        resource_owner_key=ACCESS_TOKEN,
-        resource_owner_secret=ACCESS_SECRET
-    )
-
+    body = { "tweet_id": id }
     user_id = os.getenv("MY_USER_ID")
-    resp = requests.post(
-        f"https://api.twitter.com/2/users/{user_id}/likes", auth=auth, json=body)
+
+    resp = requests.post(f"https://api.twitter.com/2/users/{user_id}/likes", auth=auth, json=body)
+
     if (resp.status_code == 200):
         resp_parsed = resp.json()
         print(f"[{date()}] Oooohhh, Tweet {id} Liked!!\n", resp_parsed)
@@ -142,17 +116,17 @@ def like(id):
 def date(): return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-print(f"[{date()}] Bot Start")
+if __name__ == "__main__":
+    print(f"[{date()}] Bot Start")
 
-while True:
-    delay = random.randint(60, 180)
-    print(f"[{date()}] Delay: {delay}")
-    tweet_id_list = []
-    tweets_list = {}
-    tweet_id_list, tweets_list = get_last_tweet_id_and_text()
-    checked_id = analyze_text(tweets=tweets_list)
-    like(tweet_id_list[0])
-    retweet(tweet_id_list[0])
-    print("#####################")
-    print(" ")
-    time.sleep(delay)
+    while True:
+        delay = random.randint(60, 180)
+        print(f"[{date()}] Delay: {delay}")
+        tweet_id_list = []
+        tweets_list = {}
+        tweets_list = get_last_tweet_id_and_text()
+        checked_id = analyze_text(tweets=tweets_list)
+        # like(checked_id)
+        # retweet(checked_id)
+        print("\n\n")
+        time.sleep(5)
