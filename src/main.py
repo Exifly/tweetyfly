@@ -132,7 +132,7 @@ if __name__ == "__main__":
         tweets_list = {}
         tweets_list = get_last_tweet_id_and_text()
         checked_id = analyze_text(tweets=tweets_list)
-        # like(checked_id)
-        # retweet(checked_id)
+        like(checked_id)
+        retweet(checked_id)
         print("\n")
         time.sleep(5)
