@@ -74,12 +74,10 @@ def retweet(id):
 
 
 def analyze_text(tweets):
-    bad_words = ["course", "crash course", "ads",
-                 "cash", "sponsor", "freelancer", "pay", "payd", "price", "USD",
-                 "client:", "freelance", "freelancer", "assistance", "homework",
-                 "exam", "exams", "pay", "us", "job", "free", "need", "helping",
-                 "we", "do", "help", "stuck", "homework", "bot", "crypto", "finance", "budget",
-                 "class", "classes", "room"]
+    with open("badwords.txt") as file:
+        bad_words = [line.strip() for line in file]
+
+    print(bad_words)
 
     checked_id = 0
     counter = 0
