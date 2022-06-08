@@ -26,9 +26,8 @@ Query parameter:
 * [x] Associare ad ogni testo(tweet) il proprio ID
 * [x] Parsare il testo per ottenere le singole parole
 * [x] Retweet solo se il testo non contiene determinate parole
-    * [ ] Retweet anche se il sentiment analysis è positivo (opzionale)
 
 
 ## TODO Feature 1 ##
 * [x] Implementare checks sulle response delle api 
-* [ ] Descrivere codice nei commenti
+* [x] Descrivere codice nei commenti

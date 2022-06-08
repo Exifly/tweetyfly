@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from requests_oauthlib import OAuth1
 from dotenv import load_dotenv
 from textblob import TextBlob
@@ -23,6 +25,7 @@ ACCESS_SECRET = os.getenv("ACCESS_SECRET")
 
 
 auth = OAuth1(
+    # - This object is required to call like and retweet api - #
     client_key=API_KEY,
     client_secret=API_SECRET,
     resource_owner_key=ACCESS_TOKEN,
@@ -35,7 +38,7 @@ def get_last_tweet_id_and_text():
     header = {'Authorization': 'Bearer {}'.format(BEARER)}
 
     query = {
-        "query": "#programming",
+        "query": "#programming",  # arguments to find in tweet texts
         "max_results": 10,
         "sort_order": "recency"
     }
@@ -49,6 +52,7 @@ def get_last_tweet_id_and_text():
         print(
             f"[{date()}] Error requesting tweets api STATUS_CODE = {resp.status_code}")
 
+    # - tweets is an object made of: {id: <id>, tweet: <text>}, used to bind ID with associated text - #
     tweets = [{"id": el['id'], "text": el['text']} for el in resp['data']]
 
     return tweets
@@ -64,6 +68,7 @@ def retweet(id):
 
     if resp_2.status_code == 200:
         resp_2 = resp_2.json()
+        # - if retweets api return retweeted: true - #
         if (resp_2['data']['retweeted']):
             print(f"[{date()}] Tweet N {id} succesfully retweeted.")
         else:
@@ -83,11 +88,13 @@ def analyze_text(tweets):
     counter = 0
 
     for text in tweets:
-        # print(f"[{date()}] Checked Tweet N {counter}")
+        # creating tweet blob array of words
         blob = TextBlob(text=text['text'])
         print(f"[{text['id']}] {text['text']}")
         count_list = 0
         blob_len = len(blob.words)
+        # - The length of blob.words is required to understand how many words is a tweet made of - #
+        # - to understand if all words in a tweet are good - #
         for x in blob.words.lower():
             if x not in bad_words:
                 count_list += 1
@@ -117,6 +124,7 @@ def like(id):
         print(f"[{date()}] Error during like request API!")
 
 
+# - Inline function to get sysdate date - #
 def date(): return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
