@@ -18,6 +18,8 @@ Query parameter:
 * [x] Invocare API per mettere like al tweet piu recente tramite id
 * [x] Invocare API per retweettare il tweet piu recente tramite id
 * [x] Spostare API in nuovo file
+* [ ] Create GUI for env configuration
+    * [ ] Write config in .env file
 
 ## Machine Learning TODO
 ### Using TextBlob to reconyze some words in tweets to avoid spam retweets
