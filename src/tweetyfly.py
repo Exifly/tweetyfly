@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 from googletrans import Translator
+from os import get_terminal_size
 from textblob import TextBlob
 from termcolor import colored
+from textwrap import wrap
 import datetime
 import random
 import time
@@ -13,11 +15,10 @@ def start(min_delay, max_delay):
     print(f"[{date()}] Bot Started")
     while True:
         delay = random.randint(min_delay, max_delay)
-        print(f"[{date()}] Delay: {delay}")
         tweets_list = retrive_latest_tweets()
         checked_id = analyze_text(tweets=tweets_list)
-        like(checked_id)
-        retweet(checked_id)
+        # like(checked_id)
+        # retweet(checked_id)
         print("\n")
         time.sleep(delay)
 
@@ -57,17 +58,26 @@ def analyze_text(tweets):
         if not is_english(tweet['text']):
             break
 
+        print('┏', colored(f"Tweed id: {tweet['id']}", 'green', attrs=['bold']), '\n┃')
+        print("┃\t", colored(f"Date: ", 'cyan',
+              attrs=['bold']), f"\n┃\t\t {date()}")
         tweet_text = TextBlob(text=tweet['text'])
-        print(f"[{tweet['id']}] {tweet['text']}")
-        # - The length of blob.words is required to understand how many words is a tweet made of - #
-        # - to understand if all words in a tweet are good - #
+        termsize = get_terminal_size()
+        wrapped_description = wrap(tweet['text'], termsize.columns - 50)
+        print('┃', colored(f"\t Text:", 'cyan', attrs=['bold']))
+        for line in wrapped_description:
+            print("┃\t\t" + line)
+
         for index, word in enumerate(tweet_text.words.lower()):
             if word not in bad_words:
                 if index + 1 == len(tweet_text.words):
-                    print([{date()}], colored(f"Oh, that's a good one!", 'green'))
+                    print('┃', colored(f"\t Result:", 'cyan', attrs=['bold']))
+                    print('┗', colored(f"\t\tOh, that's a good one!", 'green'))
                     return tweet['id']
             else:
-                print([{date()}], colored(f"Tweet with id {tweet['id']} is not good..\n", 'red'))
+                print('┃', colored(f"\t Result:", 'cyan', attrs=['bold']))
+                print('┗', colored(
+                    f"\t\tTweet with id {tweet['id']} is not good..\n", 'red'))
                 break
 
 
