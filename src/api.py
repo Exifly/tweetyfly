@@ -40,7 +40,6 @@ def retrive_latest_tweet_api():
          "sort_order": "recency"
       }
    )
-   print("aaaaaaaa")
    return response
 
 
