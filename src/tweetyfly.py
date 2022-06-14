@@ -10,15 +10,14 @@ import random
 import time
 import api
 
-
 def start(min_delay, max_delay):
     print(f"[{date()}] Bot Started")
     while True:
         delay = random.randint(min_delay, max_delay)
         tweets_list = retrive_latest_tweets()
         checked_id = analyze_text(tweets=tweets_list)
-        # like(checked_id)
-        # retweet(checked_id)
+        like(checked_id)
+        retweet(checked_id)
         print("\n")
         time.sleep(delay)
 
@@ -103,6 +102,7 @@ def get_bad_words():
         print(
             f"[{date()}] File badwords.txt not found, please insert or create one in src/badwords.txt\n")
         return []
+
 
 
 def is_english(text):

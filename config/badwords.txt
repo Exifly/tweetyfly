@@ -40,3 +40,6 @@ blockchain
 nft
 featured
 learn
+survey
+courses
+earn

@@ -65,3 +65,11 @@ def like_api(tweet_id):
       json={"tweet_id": tweet_id}
    )
    return response
+   
+def get_profile(profile_id):
+   response = requests.get(
+      f"https://api.twitter.com/2/users/{profile_id}/tweets",
+
+      headers={'Authorization': 'Bearer {}'.format(BEARER)},
+   )
+   return response
