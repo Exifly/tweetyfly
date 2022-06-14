@@ -43,7 +43,7 @@ def retweet(tweet_id):
         response = response.json()
         # - if retweets api return retweeted: true - #
         if (response['data']['retweeted']):
-            print(f"[{date()}] Tweet N {tweet_id} succesfully retweeted.")
+            return print(colored(f"Tweet N {tweet_id} succesfully retweeted.\n", 'green', attrs=['bold']))
         else:
             print(f"[{date()}] Tweet N {tweet_id} not retweeted")
     else:
@@ -85,9 +85,9 @@ def like(tweet_id):
 
     if (response.status_code == 200):
         response = response.json()
-        return print(f"[{date()}] Oooohhh, Tweet {tweet_id} Liked!!\n", response)
+        return print(colored(f"Oooohhh, Tweet {tweet_id} Liked!!\n", 'green', attrs=['bold']))
     else:
-        return print(f"[{date()}] Error during like request API!")
+        return print(f"Error during like request API!")
 
 
 # - Inline function to get sysdate date - #
@@ -96,7 +96,7 @@ def date(): return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 def get_bad_words():
     try:
-        with open("badwords.txt") as file:
+        with open("../config/badwords.txt") as file:
             return [line.strip() for line in file]
     except FileNotFoundError:
         print(
