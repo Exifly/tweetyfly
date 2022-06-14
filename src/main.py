@@ -17,6 +17,6 @@ start_text = '''
 
 if __name__ == "__main__":
     print(colored(start_text, 'cyan', attrs=['bold']))
-    min_delay = 2
-    max_delay = 2
+    min_delay = 200
+    max_delay = 300
     tweetyfly.start(min_delay, max_delay)
